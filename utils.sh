@@ -23,7 +23,6 @@ find_item(){
     for ((i=0;i<=${#arr[@]};i++))
     do
         line=${arr[$i]}
-        echo $line
         number=${line%%:*}
         if [ $i -eq 0 ]
         then
