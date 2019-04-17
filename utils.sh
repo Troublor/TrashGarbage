@@ -5,6 +5,7 @@ source $HOME/bin/scripts/trash/trash.conf
 find_item(){
     # find item in trash data file
     # return a list of line number (seperated by space): the line number of the record, -1 if it doesn't exist
+    # use option -e to precisely match item, by default it matches items with prefix
     if [ $1 == "-e" ]
     then 
         # precisely match
