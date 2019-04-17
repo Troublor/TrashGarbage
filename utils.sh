@@ -7,10 +7,10 @@ find_item(){
     # return a list of line number (seperated by space): the line number of the record, -1 if it doesn't exist
     # use option -e to precisely match item, by default it matches items with prefix
     if [ $1 == "-e" ]
-    then 
+    then
         # precisely match
         reg="^[F|D]\ +.+\ +$2\ *$"
-    else 
+    else
         # prefix match
         reg="^[F|D]\ +.+\ +$1.*\ *$"
     fi
@@ -19,10 +19,18 @@ find_item(){
     OLD_IFS="$IFS"
     IFS=$'\n'
     list=""
-    for line in $raw
+    arr=($raw)
+    for ((i=0;i<=${#arr[@]};i++))
     do
+        line=${arr[$i]}
         echo $line
-        list="$list ${line%%:*}"
+        number=${line%%:*}
+        if [ $i -eq 0 ]
+        then
+            list=$number
+            continue
+        fi
+        list="$list $number"
     done
     IFS="$OLD_IFS"
     echo "$list"
