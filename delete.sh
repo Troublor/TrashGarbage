@@ -3,6 +3,7 @@
 # which delete files by putting them into trash folder ($HOME/.trash)
 
 source $HOME/bin/scripts/trash/trash.conf
+source $HOME/bin/scripts/trash/utils.sh
 
 USAGE="Usage: delete [-f] [-d] [-h] file [file [file ...]]\n
 \t  -f  use system rm command to delete\n
@@ -28,20 +29,30 @@ new_trash(){
     dirname=$(dirname $file_origin_path)
     basename=$(basename $file_origin_path)
     
-    raw=$(cat $data_file | grep -n $basename)
-    row=${raw%%:*}
-    if [ ${#row} != 0 ] # the row exists
+    lines=($(find_item -e $basename))
+    if [ ${#lines[@]} -ne 0 ] # the row exists
     then
-        raw=${raw#*:}
-        type=${raw%% *}
-        if [ $type == "F" ]
-        then
-            rm $trash_folder/$basename
-        elif [ $type == "D" ]
-        then
-            rm -d -r $trash_folder/$basename
-        fi
-        sed -i "${row}d" $data_file
+        payload=""
+        for number in ${lines[@]}
+        do
+            raw=$(sed -n "${number}p" $data_file)
+            type=${raw%% *}
+            if [ -z $payload ]
+            then
+                payload="${number}d"
+            else
+                payload="$payload;${number}d"
+            fi
+            
+            if [ $type = "F" ]
+            then
+                rm $trash_folder/$basename
+            elif [ $type = "D" ]
+            then
+                rm -d -r $trash_folder/$basename
+            fi
+        done
+        sed -i "${payload}" $data_file
     fi
     
     if [ -d $file_origin_path ]
@@ -125,7 +136,7 @@ for item in $@
 do
     # actually move
     if [ ! -e $item ]
-    then 
+    then
         echo "[ERROR] Cannot remove '$item': No such file or directory"
     elif [ -d $item ]
     then
