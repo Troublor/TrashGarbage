@@ -33,7 +33,7 @@ undelete_item(){
         then
             mkdir -p $origin_dir
         fi
-        if [ -d $origin_dir/$item -o -f $origin_dir/$item ]
+        if [ -e $origin_dir/$item ]
         then
             # ask whether override
             echo -n "warning\n[WARN] $origin_dir/$item exists, continue to override? (y/n) "

@@ -44,12 +44,11 @@ new_trash(){
         sed -i "${row}d" $data_file
     fi
     
-    if [ -f $file_origin_path ]
-    then
-        echo "F $dirname $basename" >> $data_file
-    elif [ -d $file_origin_path ]
+    if [ -d $file_origin_path ]
     then
         echo "D $dirname $basename" >> $data_file
+    else
+        echo "F $dirname $basename" >> $data_file
     fi
 }
 
@@ -60,8 +59,7 @@ get_abs_path(){
     then
         cd $tmp_path
         path=$(pwd)
-    elif [ -f $tmp_path ]
-    then
+    else
         cd $(dirname $tmp_path)
         path=$(pwd)/$(basename $tmp_path)
     fi
@@ -71,7 +69,10 @@ get_abs_path(){
 force_remove(){
     for item in $@
     do
-        if [ -d $item ]
+        if [ ! -e $item ]
+        then
+            echo "[ERROR] Cannot remove '$item': No such file or directory"
+        elif [ -d $item ]
         then
             if [ $delete_dir == true ]
             then
@@ -81,13 +82,10 @@ force_remove(){
             else
                 echo "[ERROR] Remove dir not allowed"
             fi
-        elif [ -f $item ]
-        then
+        else
             cmd="rm $item"
             eval $cmd
             echo "[INFO] PERMANENTLY removing file: $item"
-        else
-            echo "[ERROR] Cannot remove '$item': No such file or directory"
         fi
     done
 }
@@ -126,7 +124,10 @@ fi
 for item in $@
 do
     # actually move
-    if [ -d $item ]
+    if [ ! -e $item ]
+    then 
+        echo "[ERROR] Cannot remove '$item': No such file or directory"
+    elif [ -d $item ]
     then
         if [ $delete_dir == true ]
         then
@@ -137,13 +138,10 @@ do
         else
             echo "[ERROR] Failed to delete directory '$item': deleting directory not allowed, -d option can be used to delete directory."
         fi
-    elif [ -f $item ]
-    then
+    else
         cmd="mv $item $HOME/.trash"
         new_trash $item
         eval $cmd
         echo "[INFO] Deleted file $item"
-    else
-        echo "[ERROR] Cannot remove '$item': No such file or directory"
     fi
 done
