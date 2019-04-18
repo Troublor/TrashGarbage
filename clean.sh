@@ -24,7 +24,6 @@ done
 for i in $TRASH_PATH/*
 do
     basename=$(basename $i)
-    echo $basename
     if [ "$basename" == "README.txt" ]
     then  
         continue
