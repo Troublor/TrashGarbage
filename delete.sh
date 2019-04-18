@@ -5,7 +5,7 @@
 source $HOME/bin/scripts/trash/trash.conf
 source $HOME/bin/scripts/trash/utils.sh
 
-USAGE="Usage: delete [-f] [-d] [-h] file [file [file ...]]\n
+USAGE="Usage: trash-del [-f] [-d] [-h] file [file [file ...]]\n
 \t  -f  use system rm command to delete\n
 \t  -d  allow deleting directory\n
 \t  -h  show this usage\n"

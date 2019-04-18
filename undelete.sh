@@ -1,7 +1,7 @@
 #!/bin/bash
 source $HOME/bin/scripts/trash/trash.conf
 
-USAGE="Usage: undelete [-h] file [file [file ...]]\n
+USAGE="Usage: trash-undel [-h] file [file [file ...]]\n
 \t  -h  show this usage\n"
 
 while getopts "h" arg
