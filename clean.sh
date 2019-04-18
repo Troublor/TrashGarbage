@@ -23,7 +23,13 @@ done
 
 for i in $TRASH_PATH/*
 do
-    lines=($( find_item -e $(basename $i) ))
+    basename=$(basename $i)
+    echo $basename
+    if [ "$basename" == "README.txt" ]
+    then  
+        continue
+    fi 
+    lines=($( find_item -e $basename ))
     if [ ${#lines[@]} -eq 0 ]
     then 
         # not recorded in data file
