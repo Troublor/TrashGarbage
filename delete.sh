@@ -22,44 +22,25 @@ then
     touch $data_file
 fi
 
-new_trash(){
+add_trash_info(){
+    # add to trash data file
+    # Data file format: TYPE DIRNAME BASENAME UUID TIME
     file_origin_path=$(get_abs_path $1)
     
-    # delete existing information
     dirname=$(dirname $file_origin_path)
     basename=$(basename $file_origin_path)
-    
-    lines=($(find_item -e $basename))
-    if [ ${#lines[@]} -ne 0 ] # the row exists
-    then
-        payload=""
-        for number in ${lines[@]}
-        do
-            raw=$(sed -n "${number}p" $data_file)
-            type=${raw%% *}
-            if [ -z $payload ]
-            then
-                payload="${number}d"
-            else
-                payload="$payload;${number}d"
-            fi
-            
-            if [ $type = "F" ]
-            then
-                rm $trash_folder/$basename
-            elif [ $type = "D" ]
-            then
-                rm -d -r $trash_folder/$basename
-            fi
-        done
-        sed -i "${payload}" $data_file
-    fi
+    uuid=$2
+    del_time=$(date)
     
     if [ -d $file_origin_path ]
     then
-        echo "D $dirname $basename" >> $data_file
-    else
-        echo "F $dirname $basename" >> $data_file
+        echo "D $dirname $basename $uuid $del_time" >> $data_file
+    elif [ -f $file_origin_path ]
+    then
+        echo "F $dirname $basename $uuid $del_time" >> $data_file
+    elif [ -L $file_origin_path ]
+    then
+        echo "L $dirname $basename $uuid $del_time" >> $data_file
     fi
 }
 
@@ -142,17 +123,23 @@ do
     then
         if [ $delete_dir == true ]
         then
-            cmd="mv $item $HOME/.trash"
-            new_trash $item
+            uuid=$(uuidgen)
+            cmd="mv $item $HOME/.trash/$uuid"
+            add_trash_info $item $uuid
             eval $cmd
             echo "[INFO] Deleted directory $item"
         else
             echo "[ERROR] Failed to delete directory '$item': deleting directory not allowed, -d option can be used to delete directory."
         fi
-    else
-        cmd="mv $item $HOME/.trash"
-        new_trash $item
+    elif [ -f $item -o -L $item ]
+    then
+        uuid=$(uuidgen)
+        cmd="mv $item $HOME/.trash/$uuid"
+        add_trash_info $item $uuid
         eval $cmd
         echo "[INFO] Deleted file $item"
+    else
+        echo "[ERROR] Cannot delete $item: only support directory, normal file and symbolic link file".
+        continue
     fi
 done
