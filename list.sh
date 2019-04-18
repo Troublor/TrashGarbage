@@ -29,25 +29,27 @@ do
 done
 
 list=""
+n=1
 while read line
 do
-    item=${line##* }
-    raw=${line% *}
-    origin_dir=${raw##* }
-    type=${line%% *}
+    line=($line)
+    item=${line[2]}
+    origin_dir=${line[1]}
+    type=${line[0]}
+    time=$(echo ${line[@]:4:6} | tr ' ' '-')
     if [ $detailed == true ]
     then
-        list="$type $item $origin_dir\n$list"
+        list="$item $n $type $origin_dir $time\n$list"
     else
         list="$list $item"
     fi
+    ((n+=1))
 done < $TRASH_DATA_FILE
-
 if [ $detailed == true ]
 then
     data=$(echo -e $list | sort)
-    list="Type Item OriginDir\n$list"
-    echo -e $list | column -s " " -t 
+    list="Item Index Type OriginDir DeleteTime\n$list"
+    echo -e "$list" | column -s " " -t
 else
     echo $list | tr ' ' '\n' | sort | tr '\n' ' '
     echo ""

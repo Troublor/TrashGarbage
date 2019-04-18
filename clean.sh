@@ -25,19 +25,19 @@ for i in $TRASH_PATH/*
 do
     basename=$(basename $i)
     if [ "$basename" == "README.txt" ]
-    then  
+    then
         continue
-    fi 
+    fi
     lines=($( find_item -e $basename ))
     if [ ${#lines[@]} -eq 0 ]
-    then 
+    then
         # not recorded in data file
-        rm -d -r $i
         if [ -d $i ]
-        then 
-            echo "[INFO] Removed directory '$i'"
-        else 
-            echo "[INFO] Removed file '$i'"
-        fi 
-    fi 
+        then
+            echo "[INFO] Remove directory '$i'"
+        else
+            echo "[INFO] Remove file '$i'"
+        fi
+        rm -d -r $i
+    fi
 done

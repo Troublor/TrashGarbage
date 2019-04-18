@@ -3,34 +3,47 @@
 source $HOME/bin/scripts/trash/trash.conf
 
 find_item(){
-    # find item in trash data file
-    # return a list of line number (seperated by space): the line number of the record
-    # use option -e to precisely match item, by default it matches items with prefix
-    if [ $1 == "-e" ]
+    precisely=false
+    if [ "$1" == "-e" ]
     then
-        # precisely match
-        reg="^[F|D]\ +.+\ +$2\ *$"
-    else
-        # prefix match
-        reg="^[F|D]\ +.+\ +$1.*\ *$"
+        precisely=true
+        shift
     fi
     
-    raw=$(cat $TRASH_DATA_FILE | grep -n -E "$reg")
-    OLD_IFS="$IFS"
-    IFS=$'\n'
+    # find item in trash data file
     list=""
-    arr=($raw)
-    for ((i=0;i<=${#arr[@]};i++))
+    n=1
+    while read line
     do
-        line=${arr[$i]}
-        number=${line%%:*}
-        if [ $i -eq 0 ]
+        data=($line)
+        if [ $precisely == "false" ]
         then
-            list=$number
-            continue
+            if [ ${#data[@]} -eq 10 ] && [[ "${data[2]}" =~ ^${1}.*$ ]]
+            then
+                if [ -z $list ]
+                then
+                    list=$n
+                else
+                    list="$list $n"
+                fi
+            fi
+        else
+            if [ ${#data[@]} -eq 10 ] && [ "${data[2]}" == "$1" ]
+            then
+                if [ -z $list ]
+                then
+                    list=$n
+                else
+                    list="$list $n"
+                fi
+            fi
         fi
-        list="$list $number"
-    done
-    IFS="$OLD_IFS"
+        
+        ((n+=1))
+    done < $TRASH_DATA_FILE
     echo "$list"
+}
+
+get_one_row(){
+    echo "$(sed -n ${1}p $TRASH_DATA_FILE)"
 }

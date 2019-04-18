@@ -1,12 +1,20 @@
 #!/bin/bash
 source $HOME/bin/scripts/trash/trash.conf
+source $HOME/bin/scripts/trash/utils.sh
 
-USAGE="Usage: trash-undel [-h] file [file [file ...]]\n
+USAGE="Usage: trash-undel [-h] [-i Index] | [file [file [file ...]]]\n
+\t  -i  undelete items using index\n
 \t  -h  show this usage\n"
 
-while getopts "h" arg
+by_index=false
+
+while getopts "ih" arg
 do
     case $arg in
+        i)
+            by_index=true
+            shift
+        ;;
         h)
             echo -e $USAGE
             exit 0
@@ -21,52 +29,73 @@ done
 trash_folder=$TRASH_PATH
 data_file=$TRASH_DATA_FILE
 
-undelete_item(){
-    raw=$(cat $data_file | grep -n $item)
-    row=${raw%%:*}
-    if [ ${#row} != 0 ] # the row exists
+undelete_by_index(){
+    if [ ! "$1" -gt 0 ]
     then
-        raw=${raw#*:}
-        raw=${raw#* }
-        origin_dir=${raw%% *}
-        if [ ! -d $origin_dir ]
+        echo "[ERROR] Wrong index to undelete: $1"
+        return
+    fi
+    data=$(get_one_row $1)
+    data=($data)
+    if [ ${#data[@]} -eq 0 ]
+    then
+        echo "[ERROR] Cannot find a item with Index $1 in trash garbage."
+        return
+    fi
+    origin_dir=${data[1]}
+    item=${data[2]}
+    uuid=${data[3]}
+    if [ ! -d $origin_dir ]
+    then
+        mkdir -p $origin_dir
+    fi
+    if [ -e $origin_dir/$item ]
+    then
+        # ask whether override
+        echo -n "[WARN] $origin_dir/$item exists, continue to override? (y/n) "
+        read input
+        if [ ! $input == "Y" -a ! $input == "y" ]
         then
-            mkdir -p $origin_dir
+            echo "[INFO] Skip $item"
+            return
+        else
+            rm -d -r $origin_dir/$item
         fi
-        if [ -e $origin_dir/$item ]
-        then
-            # ask whether override
-            echo -n "warning\n[WARN] $origin_dir/$item exists, continue to override? (y/n) "
-            read input
-            if [ ! $input == "Y" -a ! $input == "y" ]
-            then
-                echo "[INFO] Skip $item"
-                exit 0
-            else
-                rm -d -r $origin_dir/$item
-            fi
-        fi
-        mv $trash_folder/$item $origin_dir
-        sed -i "${row}d" $data_file
-        echo "[INFO] Retrieved $item to $origin_dir"
+    fi
+    mv $trash_folder/$uuid $origin_dir/$item
+    sed -i "${1}d" $data_file
+    echo "[INFO] Retrieve $item to $origin_dir"
+    return
+}
+
+undelete_by_name(){
+    lines=$(find_item -e $1)
+    lines=($lines)
+    if [ ${#lines[@]} -eq 0 ]
+    then
+        echo "[ERROR] Cannot find item '$1' in trash garbage."
+    elif [ ${#lines[@]} -eq 1 ]
+    then
+        undelete_by_index ${lines[0]}
     else
-        echo "[ERROR] Undelete failed: cannot find '$item'"
+        echo "[ERROR] Item '$1' has multiple versions in trash garbage, please use 'trash-search $1' and 'trash-undel -i [Index]' to specify which one to undelete."
     fi
 }
 
-main(){
-    if [ $# -ge 1 ]
-    then
-        for item in $@
-        do
-            # echo $item
-            undelete_item $item
-        done
-    else
-        raw=$(sed -n '$p' $TRASH_DATA_FILE)
-        item=${raw##* }
-        undelete_item $item
-    fi
+undelete_items(){
+    for i in $@
+    do
+        if [ $by_index == "true" ]
+        then
+            undelete_by_index $i
+        else
+            undelete_by_name $i
+        fi
+    done
+}
+
+main(){    
+    undelete_items $@
 }
 
 cd $TRASH_PATH
