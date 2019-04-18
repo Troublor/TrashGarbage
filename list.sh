@@ -11,7 +11,7 @@ USAGE="Usage: trash-ls [-a] [-h]\n
 
 detailed=false
 
-while getopts "a" arg
+while getopts "ah" arg
 do
     case $arg in
         a)
