@@ -34,14 +34,14 @@ data_file=$TRASH_DATA_FILE
 undelete_by_index(){
     if [ ! "$1" -gt 0 ]
     then
-        echo "[ERROR] Wrong index to undelete: $1"
+        echo "[ERROR] Wrong index to undelete: '$1'"
         return
     fi
     data=$(get_one_row $1)
     data=($data)
     if [ ${#data[@]} -eq 0 ]
     then
-        echo "[ERROR] Cannot find a item with Index $1 in trash garbage."
+        echo "[ERROR] Cannot find a item with Index '$1' in trash garbage."
         return
     fi
     origin_dir=${data[1]}
@@ -54,7 +54,7 @@ undelete_by_index(){
     if [ -e $origin_dir/$item ]
     then
         # ask whether override
-        echo -n "[WARN] $origin_dir/$item exists, continue to override? (y/n) "
+        echo -n "[WARN] '$origin_dir/$item' exists, continue to override? (y/n) "
         read input
         if [ ! $input == "Y" -a ! $input == "y" ]
         then
@@ -66,7 +66,7 @@ undelete_by_index(){
     fi
     mv $trash_folder/$uuid $origin_dir/$item
     sed -i "${1}d" $data_file
-    echo "[INFO] Retrieve $item to $origin_dir"
+    echo "[INFO] Retrieve '$item' to '$origin_dir'"
     return
 }
 

@@ -57,14 +57,14 @@ force_remove(){
             then
                 cmd="rm -d -r $item"
                 eval $cmd
-                echo "[INFO] PERMANENTLY remove directory: $item"
+                echo "[INFO] PERMANENTLY remove directory: '$item'"
             else
                 echo "[ERROR] Remove dir not allowed"
             fi
         else
             cmd="rm $item"
             eval $cmd
-            echo "[INFO] PERMANENTLY remove file: $item"
+            echo "[INFO] PERMANENTLY remove file: '$item'"
         fi
     done
 }
@@ -114,7 +114,7 @@ do
             cmd="mv $item $HOME/.trash/$uuid"
             add_trash_info $item $uuid
             eval $cmd
-            echo "[INFO] Delete directory $item"
+            echo "[INFO] Delete directory '$item'"
         else
             echo "[ERROR] Failed to delete directory '$item': deleting directory not allowed, -d option can be used to delete directory."
         fi
@@ -124,7 +124,7 @@ do
         cmd="mv $item $HOME/.trash/$uuid"
         add_trash_info $item $uuid
         eval $cmd
-        echo "[INFO] Delete file $item"
+        echo "[INFO] Delete file '$item'"
     else
         echo "[ERROR] Cannot delete $item: only support directory, normal file and symbolic link file".
         continue
