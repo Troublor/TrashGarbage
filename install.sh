@@ -23,6 +23,7 @@ fi
 
 echo "[INFO] Create Recycle Bin Folder $TRASH_PATH"
 mkdir -p $TRASH_PATH
+echo "" > $TRASH_DATA_FILE
 
 BIN_PATH=$TRASH_ROOT_PATH/bin
 if [ ! -e $BIN_PATH ]
