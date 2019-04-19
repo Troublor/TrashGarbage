@@ -26,5 +26,7 @@ ln -s $TRASH_ROOT_PATH/list.sh $HOME/bin/trash-ls
 ln -s $TRASH_ROOT_PATH/clean.sh $HOME/bin/trash-clean
 # Command: trash-clear
 ln -s $TRASH_ROOT_PATH/clear.sh $HOME/bin/trash-clear
+# Command: trash-search
+ln -s $TRASH_ROOT_PATH/search.sh $HOME/bin/trash-search
 
 echo [INFO] Installation finished. Please reopen the terminal to use Trash!

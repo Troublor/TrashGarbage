@@ -17,7 +17,7 @@ delete_row $env_path "\[Trash\]"
 delete_row $env_path "TRASH_PATH"
 delete_row $env_path "TRASH_ROOT_PATH"
 
-commands=("trash-del" "trash-undel" "trash-ls" "trash-clean" "trash-clear")
+commands=("trash-del" "trash-undel" "trash-ls" "trash-clean" "trash-clear", "trash-search")
 for c in ${commands[@]}
 do
     if [ -f $HOME/bin/$c ]
