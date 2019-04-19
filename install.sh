@@ -5,6 +5,25 @@ TRASH_ROOT_PATH=$(cd "$(dirname $0)"; pwd)
 
 source $TRASH_ROOT_PATH/trash.conf
 
+
+echo "[INFO] Create Trash Garbage Folder $TRASH_PATH"
+if [ -e $TRASH_PATH ]
+then
+    echo -n "[WARN] Trash Garbage Folder $TRASH_PATH already exists. Are you sure to override it? (y/n) "
+    read input
+    if [ "$input" == "Y" -o "$input" == "y" ]
+    then
+        rm -d -r $TRASH_PATH
+        echo "[INFO] Delete Trash Garbage Folder $TRASH_PATH"
+    else
+        echo "[INFO] Abort installation"
+        exit 0
+    fi
+fi
+
+echo "[INFO] Create Trash Garbage Folder $TRASH_PATH"
+mkdir -p $TRASH_PATH
+
 BIN_PATH=$TRASH_ROOT_PATH/bin
 if [ ! -e $BIN_PATH ]
 then
@@ -33,5 +52,6 @@ echo "[INFO] Create command trash-search"
 ln -s $TRASH_ROOT_PATH/scripts/search.sh $BIN_PATH/trash-search
 
 chmod +x $BIN_PATH/trash-*
+
 
 echo "[INFO] Installation finished. Please find executable command in ./bin!"
