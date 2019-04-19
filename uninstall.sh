@@ -8,7 +8,7 @@ TRASH_ROOT_PATH=$(cd "$(dirname $0)"; pwd)
 source $TRASH_ROOT_PATH/trash.conf
 
 # ask confirmation
-echo -n "[WARN] Are you sure to delete Trash Garbage Folder $TRASH_PATH? (y/n) "
+echo -n "[WARN] Do you want to delete Trash Garbage Folder $TRASH_PATH? (y/n) "
 read input
 if [ $input == "Y" -o $input == "y" ]
 then
