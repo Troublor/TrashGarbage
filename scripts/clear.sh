@@ -1,7 +1,8 @@
 #!/bin/bash
 # clear the trash folder
 
-source $HOME/bin/scripts/trash/trash.conf
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
 
 sed -i '1,$d' $TRASH_DATA_FILE
 

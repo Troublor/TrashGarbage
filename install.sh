@@ -1,32 +1,37 @@
 #!/bin/bash
 # Install shell script of 'trash' command familay
 
-# the file to put environment variables in
-env_path="$HOME/.bashrc"
+TRASH_ROOT_PATH=$(cd "$(dirname $0)"; pwd)
 
-TRASH_PATH='$HOME/.trash'
-TRASH_ROOT_PATH="$(dirname $0)"
+source $TRASH_ROOT_PATH/trash.conf
 
-payload="# [Trash] This is env variables for 'trash' command family, which is a trash garbage tool for linux"
-echo $payload >> $env_path
-payload="TRASH_PATH=$TRASH_PATH"
-echo $payload >> $env_path
-payload="TRASH_ROOT_PATH=$TRASH_ROOT_PATH"
-echo $payload >> $env_path
-echo -e "\n" >> $env_path
-
+BIN_PATH=$TRASH_ROOT_PATH/bin
+if [ ! -e $BIN_PATH ]
+then
+    mkdir -p $BIN_PATH
+else
+    rm $BIN_PATH/trash-*
+fi
 # Create soft link for each command
 # Command: trash-del
-ln -s $TRASH_ROOT_PATH/delete.sh $HOME/bin/trash-del
+echo "[INFO] Create command trash-del"
+ln -s $TRASH_ROOT_PATH/scripts/delete.sh $BIN_PATH/trash-del
 # Command: trash-undel
-ln -s $TRASH_ROOT_PATH/undelete.sh $HOME/bin/trash-undel
+echo "[INFO] Create command trash-undel"
+ln -s $TRASH_ROOT_PATH/scripts/undelete.sh $BIN_PATH/trash-undel
 # Command: trash-ls
-ln -s $TRASH_ROOT_PATH/list.sh $HOME/bin/trash-ls
+echo "[INFO] Create command trash-ls"
+ln -s $TRASH_ROOT_PATH/scripts/list.sh $BIN_PATH/trash-ls
 # Command: trash-clean
-ln -s $TRASH_ROOT_PATH/clean.sh $HOME/bin/trash-clean
+echo "[INFO] Create command trash-clean"
+ln -s $TRASH_ROOT_PATH/scripts/clean.sh $BIN_PATH/trash-clean
 # Command: trash-clear
-ln -s $TRASH_ROOT_PATH/clear.sh $HOME/bin/trash-clear
+echo "[INFO] Create command trash-clear"
+ln -s $TRASH_ROOT_PATH/scripts/clear.sh $BIN_PATH/trash-clear
 # Command: trash-search
-ln -s $TRASH_ROOT_PATH/search.sh $HOME/bin/trash-search
+echo "[INFO] Create command trash-search"
+ln -s $TRASH_ROOT_PATH/scripts/search.sh $BIN_PATH/trash-search
 
-echo [INFO] Installation finished. Please reopen the terminal to use Trash!
+chmod +x $BIN_PATH/trash-*
+
+echo "[INFO] Installation finished. Please find executable command in ./bin!"

@@ -1,6 +1,8 @@
 #!/bin/bash
-source $HOME/bin/scripts/trash/trash.conf
-source $HOME/bin/scripts/trash/utils.sh
+
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
+source $CUR_DIR/../scripts/utils.sh
 
 USAGE="Usage: trash-search [-e] [-h] keyword\n
 \t  -e  presicely search keyword (without this option, it will search for prefix)\n

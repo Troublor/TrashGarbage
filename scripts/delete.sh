@@ -2,8 +2,9 @@
 # this is the implementation of a command
 # which delete files by putting them into trash folder ($HOME/.trash)
 
-source $HOME/bin/scripts/trash/trash.conf
-source $HOME/bin/scripts/trash/utils.sh
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
+source $CUR_DIR/../scripts/utils.sh
 
 USAGE="Usage: trash-del [-f] [-d] [-h] file [file [file ...]]\n
 \t  -f  use system rm command to delete\n
@@ -42,20 +43,6 @@ add_trash_info(){
     then
         echo "L $dirname $basename $uuid $del_time" >> $data_file
     fi
-}
-
-get_abs_path(){
-    CURDIR=$(pwd)
-    tmp_path=$CURDIR/$1
-    if [ -d $tmp_path ]
-    then
-        cd $tmp_path
-        path=$(pwd)
-    else
-        cd $(dirname $tmp_path)
-        path=$(pwd)/$(basename $tmp_path)
-    fi
-    echo $path
 }
 
 force_remove(){

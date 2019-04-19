@@ -1,8 +1,9 @@
 #!/bin/bash
 # clean garbage in trash
 # garbage: files in TRASH_PAHT but not recorded in TRASH_DATA_FILE
-source $HOME/bin/scripts/trash/trash.conf
-source $HOME/bin/scripts/trash/utils.sh
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
+source $CUR_DIR/../scripts/utils.sh
 
 USAGE="Usage: trash-clean [-h]\n
 \t  -h  show this usage\n"

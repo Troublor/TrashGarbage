@@ -1,6 +1,8 @@
 #!/bin/bash
-source $HOME/bin/scripts/trash/trash.conf
-source $HOME/bin/scripts/trash/utils.sh
+
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
+source $CUR_DIR/../scripts/utils.sh
 
 USAGE="Usage: trash-undel [-h] [-i Index] | [file [file [file ...]]]\n
 \t  -i  undelete items using index\n

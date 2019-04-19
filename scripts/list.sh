@@ -1,7 +1,8 @@
 #!/bin/bash
 # list the items in trash
 
-source $HOME/bin/scripts/trash/trash.conf
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
 
 # set -x
 

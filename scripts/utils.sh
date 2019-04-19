@@ -1,6 +1,23 @@
 #!/bin/bash
 # tools useful in this repo
-source $HOME/bin/scripts/trash/trash.conf
+
+CUR_DIR=$(dirname $0)
+source $CUR_DIR/../trash.conf
+
+
+get_abs_path(){
+    CURDIR=$(pwd)
+    tmp_path=$CURDIR/$1
+    if [ -d $tmp_path ]
+    then
+        cd $tmp_path
+        path=$(pwd)
+    else
+        cd $(dirname $tmp_path)
+        path=$(pwd)/$(basename $tmp_path)
+    fi
+    echo $path
+}
 
 find_item(){
     precisely=false
