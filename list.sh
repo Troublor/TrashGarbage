@@ -48,7 +48,7 @@ done < $TRASH_DATA_FILE
 if [ $detailed == true ]
 then
     data=$(echo -e $list | sort)
-    list="Item Index Type OriginDir DeleteTime\n$list"
+    list="|Item| |Index| |Type| |OriginDir| |DeleteTime|\n$list"
     echo -e "$list" | column -s " " -t
 else
     echo $list | tr ' ' '\n' | sort | tr '\n' ' '

@@ -21,6 +21,38 @@ do
     esac
 done
 
+# find item in trash data file
+list=""
+bad_lines=""
+lost_lines=""
+n=1
+echo "[INFO] Cleaning trash data file..."
+while read line
+do
+    data=($line)
+    if [ ${#data[@]} -eq 10 ]
+    then
+        if [ ! -e $TRASH_PAHT/${data[3]} ]
+        then
+            echo "[INFO] Remove bad line: $line"
+            lost_lines="$lost_lines ${n}d"
+        fi
+    else
+        echo "[INFO] Remove lost line: $line"
+        bad_lines="$bad_lines ${n}d"
+    fi
+    ((n+=1))
+done < $TRASH_DATA_FILE
+
+lost_lines=("$lost_lines")
+payload=$(join $";" $lost_lines)
+sed -i "$payload" $TRASH_DATA_FILE
+bad_lines=("$bad_lines")
+payload=$(join $";" $bad_lines)
+sed -i "$payload" $TRASH_DATA_FILE
+echo "[INFO] Cleaning trash data file... done"
+echo "----------------------------------------------------------------"
+echo "[INFO] Cleaning untracked files..."
 for i in $TRASH_PATH/*
 do
     basename=$(basename $i)
@@ -28,16 +60,26 @@ do
     then
         continue
     fi
-    lines=($( find_item -e $basename ))
-    if [ ${#lines[@]} -eq 0 ]
+    find=false
+    while read line
+    do
+        data=($line)
+        if [ "$basename" == "${data[3]}" ]
+        then
+            find=true
+            break
+        fi
+    done < $TRASH_DATA_FILE
+    if [ "$find" == "false" ]
     then
-        # not recorded in data file
         if [ -d $i ]
         then
-            echo "[INFO] Remove directory '$i'"
+            echo "[INFO] Remove untracked directory $i"
+            rm -d -r $i
         else
-            echo "[INFO] Remove file '$i'"
+            echo "[INFO] Remove untracked file $i"
+            rm $i
         fi
-        rm -d -r $i
     fi
 done
+echo "[INFO] Cleaning untracked files... done"

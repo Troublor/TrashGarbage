@@ -47,3 +47,9 @@ find_item(){
 get_one_row(){
     echo "$(sed -n ${1}p $TRASH_DATA_FILE)"
 }
+
+join() {
+    local IFS="$1"
+    shift
+    echo "$*"
+}

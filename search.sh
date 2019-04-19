@@ -67,7 +67,7 @@ done
 
 echo ""
 list=$(echo -e $list | sort)
-list="Item Index Type OriginDir DeleteTime\n$list"
+list="|Item| |Index| |Type| |OriginDir| |DeleteTime|\n$list"
 echo -e "$list" | column -s " " -t
 echo ""
 echo "[INFO] Please use trash-undel -i [Index] to specifiy the item to undelete. "
