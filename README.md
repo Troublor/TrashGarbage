@@ -4,7 +4,7 @@ Trasher is a command family on Linux especially Ubuntu, which contains the follo
 
 `trash-del`, `trash-undel`, `trash-ls`, `trash-search`, `trash-clear`, `trash-clean`
 
-Trasher is aimed to implement the functionality of Recycle Bin on Windows. 
+Trasher is aimed to implement the functionality of Recycle Bin of Windows. 
 
 ---
 
