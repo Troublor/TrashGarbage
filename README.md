@@ -36,6 +36,12 @@ Currently, there are two variables needed to specify in `trash.conf`:
 
 ---
 
+### Prerequisite
+
+Trasher uses `bash` shell. You may need `bash` to use this command family. 
+
+---
+
 ### Installation
 
 **First:** Clone the repository: 
