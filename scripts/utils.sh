@@ -6,8 +6,7 @@ source $CUR_DIR/../trash.conf
 
 
 get_abs_path(){
-    CURDIR=$(pwd)
-    tmp_path=$CURDIR/$1
+    tmp_path=$1
     if [ -d $tmp_path ]
     then
         cd $tmp_path
