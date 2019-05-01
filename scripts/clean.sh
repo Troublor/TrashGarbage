@@ -1,9 +1,11 @@
 #!/bin/bash
 # clean garbage in trash
-# garbage: files in TRASH_PAHT but not recorded in TRASH_DATA_FILE
+# garbage: files in TRASH_PATH but not recorded in TRASH_DATA_FILE
 CUR_DIR=$(dirname $0)
 source $CUR_DIR/../trash.conf
 source $CUR_DIR/../scripts/utils.sh
+
+echo $TRASH_PATH
 
 USAGE="Usage: trash-clean [-h]\n
 \t  -h  show this usage\n"
@@ -33,13 +35,14 @@ do
     data=($line)
     if [ ${#data[@]} -eq 10 ]
     then
-        if [ ! -e $TRASH_PAHT/${data[3]} ]
+        if [ ! -e "$TRASH_PATH/${data[3]}" ]
         then
-            echo "[INFO] Remove bad line: $line"
+        echo "$TRASH_PATH/${data[3]}"
+            echo "[INFO] Delete lost-track record: $line"
             lost_lines="$lost_lines ${n}d"
         fi
     else
-        echo "[INFO] Remove lost line: $line"
+        echo "[INFO] Delete bad line: $line"
         bad_lines="$bad_lines ${n}d"
     fi
     ((n+=1))
@@ -56,6 +59,11 @@ echo "----------------------------------------------------------------"
 echo "[INFO] Cleaning untracked files..."
 for i in $TRASH_PATH/*
 do
+    if [ "$i" == "$TRASH_PATH/*" ] 
+    then 
+    # Skip the process when the folder is empty. 
+        continue
+    fi
     basename=$(basename $i)
     if [ "$basename" == "README.txt" ]
     then
